@@ -3,27 +3,45 @@ const trainings = [
     name: 'Zestaw wakacyjny',
     description: 'Będzie spoko na plaży wyglądać. Klata, biceps!!!',
     exercises: [
-      { name: 'Ławka płaska' },
-      { name: 'Ławka skos dodatni' },
-      { name: 'Ławka skos ujemny' }
+      { name: 'Ławka płaska',
+        sets: []
+      },
+      { name: 'Ławka skos dodatni',
+        sets: []
+      },
+      { name: 'Ławka skos ujemny',
+        sets: []
+      }
     ]
   },
   { id: 2,
     name: 'Nogi',
     description: 'Mało ważne, bo nie widać, ale chyba trzeba',
     exercises: [
-      { name: 'Wypychanie ciężaru na suwnicy' },
-      { name: 'Przysiady wykroczne' },
-      { name: 'Przysiady ze sztangą na barkach' }
+      { name: 'Wypychanie ciężaru na suwnicy',
+        sets: []
+      },
+      { name: 'Przysiady wykroczne',
+        sets: []
+      },
+      { name: 'Przysiady ze sztangą na barkach',
+        sets: []
+      }
     ]
   },
   { id: 3,
     name: 'Barki, plecy',
     description: 'Drugi najważniejszy po wakacyjnym',
     exercises: [
-      { name: 'Narciarz' },
-      { name: 'Podciąganie' },
-      { name: 'Unoszenie sztangielek' }
+      { name: 'Narciarz',
+        sets: []
+      },
+      { name: 'Podciąganie',
+        sets: []
+      },
+      { name: 'Unoszenie sztangielek',
+        sets: []
+      }
     ]
   }
 ]
