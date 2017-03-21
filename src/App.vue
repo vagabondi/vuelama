@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import trainings from './mock'
+import trainingsMock from './mock'
 import _ from 'lodash'
 import SingleTraining from './components/SingleTraining.vue'
 import EditTraining from './components/EditTraining.vue'
@@ -59,7 +59,7 @@ import { eventBus } from './main'
 export default {
   data () {
     return {
-      trainings,
+      trainings: trainingsMock,
       trainingToEdit: {},
       addingNew: false,
       page: 'home'

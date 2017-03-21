@@ -5,8 +5,8 @@
             <div class="col-xs-9">
                 <label>Ciężar</label>
                 <div class="progress">
-                    <div class="progress-bar" role="progressbar" :style="{width: (currentWeight/weight)*100 + '%'}">
-                        {{ (currentWeight/weight)*100 }}%
+                    <div class="progress-bar" role="progressbar" :style="{width: goalPercentage + '%'}">
+                        {{ goalPercentage }}%
                     </div>
                 </div>
             </div>
@@ -54,6 +54,11 @@
                 timer: null
             }
         },
+        computed: {
+            goalPercentage: function () {
+                return this.currentWeight/this.weight*100
+            }
+        },
         created () {
             eventBus.$on('trainingWasStarted', (data) => {
                 this.training = data.training
@@ -98,6 +103,12 @@
             },
             endWorkout () {
                 eventBus.changePage('summary')
+                eventBus.getSummary({
+                        training: this.training,
+                        time: this.time,
+                        currentTime: this.currentTime,
+                        goal: this.goalPercentage
+                })
             }
         }
     }

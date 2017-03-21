@@ -14,6 +14,9 @@ export const eventBus = new Vue({
     },
     changePage (data) {
       this.$emit('pageWasChanged', data)
+    },
+    getSummary (data) {
+      this.$emit('endOfWorkout', data)
     }
   }
 })

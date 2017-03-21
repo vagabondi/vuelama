@@ -11,28 +11,16 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <th>Ćwiczenie 1</th>
-                <td>24</td>
-                <td>300kg</td>
-                <td>30kg</td>
-            </tr>
-            <tr>
-                <th>Ćwiczenie 2</th>
-                <td>40</td>
-                <td>400kg</td>
-                <td>20kg</td>
-            </tr>
-            <tr>
-                <th>Ćwiczenie 3</th>
-                <td>8</td>
-                <td>100kg</td>
-                <td>10kg</td>
+            <tr v-for="exercise in training.exercises">
+                <th>{{ exercise.name }}</th>
+                <td>{{ exerciseReps(exercise) }}</td>
+                <td>{{ exerciseWeight(exercise) }}kg</td>
+                <td>{{ exerciseMax(exercise) }}kg</td>
             </tr>
             </tbody>
         </table>
         <div class="alert alert-danger center-block" role="alert" style="max-width: 400px;">
-            <b>Cel: </b>80% - słabo!
+            <b>Cel: </b>{{ goal }}% - {{ goalMessage }}!
         </div>
         <div class="alert alert-success center-block" role="alert" style="max-width: 400px;">
             <b>Czas: </b>40 minut - lepiej niż założyłeś, nice!
@@ -45,9 +33,51 @@
     import { eventBus } from '../main'
 
     export default {
+        data () {
+            return {
+                training: {},
+                goal: 0
+            }
+        },
+        created() {
+            eventBus.$on('endOfWorkout', (data) => {
+                this.training = data.training
+                this.goal = data.goal
+            })
+        },
+        computed: {
+            goalMessage: function () {
+                if (this.goal <= 10) {
+                    return 'Słabo!!!'
+                }
+                return "Nieźle!"
+            }
+        },
         methods: {
             backToHomepage () {
                 eventBus.changePage('home')
+            },
+            exerciseWeight (exercise) {
+                let sum = 0
+                _.forEach(exercise.sets, (exerciseSet) => {
+                    sum += Number(exerciseSet.weight)
+                })
+                return sum
+            },
+            exerciseReps (exercise) {
+                let sum = 0
+                _.forEach(exercise.sets, (exerciseSet) => {
+                    sum += Number(exerciseSet.reps)
+                })
+                return sum
+            },
+            exerciseMax (exercise) {
+                let max = _.maxBy(exercise.sets, 'weight')
+                if (max !== undefined) {
+                    return max.weight
+                }
+                return 0
+
             }
         }
     }
