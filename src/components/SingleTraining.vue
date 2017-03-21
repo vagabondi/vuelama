@@ -23,8 +23,8 @@
             }
         },
         methods: {
-            edit () {
-                this.$emit('editTraining', this.training.id)
+            edit (trainingId) {
+                this.$router.push({path: `/training/${this.training.id}/edit`})
             },
             deleteTraining () {
                 this.$emit('deleteTraining', this.training.id)

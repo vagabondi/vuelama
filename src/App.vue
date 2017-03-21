@@ -1,45 +1,49 @@
 <template>
   <div class="wrapper">
     <div class="containter">
-      <transition name="homebox" enter-active-class="comingin" type="animation">
-        <div class="col-xs-12 col-sm-8 col-sm-offset-2" v-show="page === 'home'">
-            <h1>Home</h1>
-          <transition-group name="slide" mode="out-in">
-            <app-single-training
-                    v-for="training in trainings"
-                    :key="training.id"
-                    :training="training"
-                    @editTraining="setTrainingToEdit($event)"
-                    @deleteTraining="deleteTraining($event)"
-            ></app-single-training>
-          </transition-group>
+      <!--<transition name="homebox" enter-active-class="comingin" type="animation">-->
+        <!--<div class="col-xs-12 col-sm-8 col-sm-offset-2" v-show="page === 'home'">-->
+            <!--<h1>Home</h1>-->
+          <!--<transition-group name="slide" mode="out-in">-->
+            <!--<app-single-training-->
+                    <!--v-for="training in trainings"-->
+                    <!--:key="training.id"-->
+                    <!--:training="training"-->
+                    <!--@editTraining="setTrainingToEdit($event)"-->
+                    <!--@deleteTraining="deleteTraining($event)"-->
+            <!--&gt;</app-single-training>-->
+          <!--</transition-group>-->
 
-          <div class="col-xs-12">
-            <button class="btn btn-primary center-block" @click="page = 'add'">Dodaj nowy</button>
-          </div>
-        </div>
-      </transition>
-      <transition name="slide" type="animation">
-        <div class="col-xs-12 col-sm-8 col-sm-offset-2"  v-show="!(Object.keys(trainingToEdit).length === 0 && trainingToEdit.constructor === Object) && page === 'edit'">
-          <h1>Edit</h1>
-          <app-edit-training :training="trainingToEdit" @trainingWasEdited="editTraining($event)"></app-edit-training>
-        </div>
-      </transition>
+          <!--<div class="col-xs-12">-->
+            <!--<button class="btn btn-primary center-block" @click="page = 'add'">Dodaj nowy</button>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</transition>-->
+      <!--<transition name="slide" type="animation">-->
+        <!--<div class="col-xs-12 col-sm-8 col-sm-offset-2"  v-show="!(Object.keys(trainingToEdit).length === 0 && trainingToEdit.constructor === Object) && page === 'edit'">-->
+          <!--<h1>Edit</h1>-->
+          <!--<app-edit-training :training="trainingToEdit" @trainingWasEdited="editTraining($event)"></app-edit-training>-->
+        <!--</div>-->
+      <!--</transition>-->
 
-      <div class="col-xs-12 col-sm-8 col-sm-offset-2" v-show="page === 'add'">
-        <h1>Add new</h1>
-        <app-add-training :trainingId="newTrainingId" @trainingWasAdded="addNewTraining($event)"></app-add-training>
+      <!--<div class="col-xs-12 col-sm-8 col-sm-offset-2" v-show="page === 'add'">-->
+        <!--<h1>Add new</h1>-->
+        <!--<app-add-training :trainingId="newTrainingId" @trainingWasAdded="addNewTraining($event)"></app-add-training>-->
+      <!--</div>-->
+
+      <!--<transition name="slide" type="animation">-->
+        <!--<app-start-training v-show="page === 'start'"></app-start-training>-->
+      <!--</transition>-->
+
+      <!--<app-workout v-show="page === 'workout'"></app-workout>-->
+
+      <!--<app-exercise-modal></app-exercise-modal>-->
+
+      <!--<app-summary v-show="page === 'summary'"></app-summary>-->
+      <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+        <router-view></router-view>
       </div>
 
-      <transition name="slide" type="animation">
-        <app-start-training v-show="page === 'start'"></app-start-training>
-      </transition>
-
-      <app-workout v-show="page === 'workout'"></app-workout>
-
-      <app-exercise-modal></app-exercise-modal>
-
-      <app-summary v-show="page === 'summary'"></app-summary>
     </div>
   </div>
 </template>
@@ -105,6 +109,24 @@ export default {
   }
 }
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <style lang="css">
   .wrapper {
