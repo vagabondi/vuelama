@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="col-xs-12">
-                <button class="btn btn-primary center-block">Zakończ</button>
+                <button class="btn btn-primary center-block" @click="endWorkout">Zakończ</button>
             </div>
         </div>
     </div>
@@ -50,7 +50,8 @@
                     seconds: 0
                 },
                 isStarted: false,
-                currentWeight: 0
+                currentWeight: 0,
+                timer: null
             }
         },
         created () {
@@ -68,7 +69,7 @@
         watch: {
             isStarted: function () {
                 if(this.isStarted) {
-                    setInterval(() => {
+                    this.timer = setInterval(() => {
                         this.currentTime.seconds++
                         if(this.currentTime.seconds === 60 ) {
                             this.currentTime.seconds = 0
@@ -94,6 +95,9 @@
                     }
                     this.currentWeight = sum
                 }
+            },
+            endWorkout () {
+                eventBus.changePage('summary')
             }
         }
     }

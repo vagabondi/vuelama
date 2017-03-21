@@ -31,6 +31,7 @@
             },
             setTraining () {
                 eventBus.setTraining(this.training)
+                eventBus.changePage('start')
             }
         }
     }

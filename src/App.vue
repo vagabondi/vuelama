@@ -1,79 +1,45 @@
 <template>
-  <div class="wrapper" style="background-color: #ffd700; overflow: hidden;">
+  <div class="wrapper">
     <div class="containter">
-      <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-        <h1>Home</h1>
-        <app-single-training
-                v-for="training in trainings"
-                :key="training.id"
-                :training="training"
-                @editTraining="setTrainingToEdit($event)"
-                @deleteTraining="deleteTraining($event)"
-        ></app-single-training>
-        <div class="col-xs-12">
-          <button class="btn btn-primary center-block" @click="addingNew = true">Dodaj nowy</button>
+      <transition name="homebox" enter-active-class="comingin" type="animation">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2" v-show="page === 'home'">
+            <h1>Home</h1>
+          <transition-group name="slide" mode="out-in">
+            <app-single-training
+                    v-for="training in trainings"
+                    :key="training.id"
+                    :training="training"
+                    @editTraining="setTrainingToEdit($event)"
+                    @deleteTraining="deleteTraining($event)"
+            ></app-single-training>
+          </transition-group>
+
+          <div class="col-xs-12">
+            <button class="btn btn-primary center-block" @click="page = 'add'">Dodaj nowy</button>
+          </div>
         </div>
-      </div>
-      <div class="col-xs-12" style="height: 1px; width: 100%; background-color: #000066;"></div>
-      <div class="col-xs-12 col-sm-8 col-sm-offset-2"  v-if="!(Object.keys(trainingToEdit).length === 0 && trainingToEdit.constructor === Object)">
-        <h1>Edit</h1>
-        <app-edit-training :training="trainingToEdit" @trainingWasEdited="editTraining($event)"></app-edit-training>
-      </div>
-      <div class="col-xs-12" style="height: 1px; width: 100%; background-color: #000066;"></div>
-      <div class="col-xs-12 col-sm-8 col-sm-offset-2" v-if="addingNew">
+      </transition>
+      <transition name="slide" type="animation">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2"  v-show="!(Object.keys(trainingToEdit).length === 0 && trainingToEdit.constructor === Object) && page === 'edit'">
+          <h1>Edit</h1>
+          <app-edit-training :training="trainingToEdit" @trainingWasEdited="editTraining($event)"></app-edit-training>
+        </div>
+      </transition>
+
+      <div class="col-xs-12 col-sm-8 col-sm-offset-2" v-show="page === 'add'">
         <h1>Add new</h1>
         <app-add-training :trainingId="newTrainingId" @trainingWasAdded="addNewTraining($event)"></app-add-training>
       </div>
-      <div class="col-xs-12" style="height: 1px; width: 100%; background-color: #000066;"></div>
-      <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-        <h1>Start</h1>
-        <app-start-training></app-start-training>
-      </div>
-      <div class="col-xs-12" style="height: 1px; width: 100%; background-color: #000066;"></div>
-      <app-workout></app-workout>
 
-      <div class="col-xs-12" style="height: 1px; width: 100%; background-color: #000066;"></div>
+      <transition name="slide" type="animation">
+        <app-start-training v-show="page === 'start'"></app-start-training>
+      </transition>
+
+      <app-workout v-show="page === 'workout'"></app-workout>
+
       <app-exercise-modal></app-exercise-modal>
-      <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-        <h1>Podsumowanie</h1>
-        <table class="table table-bordered table-hover text-center" style="background-color: #fff; max-width: 600px; margin: 20px auto">
-          <thead>
-          <tr>
-            <th>Ćw</th>
-            <th>Powtórzenia</th>
-            <th>Ciężar łącznie</th>
-            <th>Max</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <th>Ćwiczenie 1</th>
-            <td>24</td>
-            <td>300kg</td>
-            <td>30kg</td>
-          </tr>
-          <tr>
-            <th>Ćwiczenie 2</th>
-            <td>40</td>
-            <td>400kg</td>
-            <td>20kg</td>
-          </tr>
-          <tr>
-            <th>Ćwiczenie 3</th>
-            <td>8</td>
-            <td>100kg</td>
-            <td>10kg</td>
-          </tr>
-          </tbody>
-        </table>
-        <div class="alert alert-danger center-block" role="alert" style="max-width: 400px;">
-          <b>Cel: </b>80% - słabo!
-        </div>
-        <div class="alert alert-success center-block" role="alert" style="max-width: 400px;">
-          <b>Czas: </b>40 minut - lepiej niż założyłeś, nice!
-        </div>
-        <button class="btn btn-primary center-block">Wróć do strony głównej</button>
-      </div>
+
+      <app-summary v-show="page === 'summary'"></app-summary>
     </div>
   </div>
 </template>
@@ -87,14 +53,22 @@ import AddTraining from './components/AddTraining.vue'
 import StartTraining from './components/StartTraining.vue'
 import Workout from './components/Workout.vue'
 import ExerciseModal from './components/ExerciseModal.vue'
+import Summary from './components/Summary.vue'
+import { eventBus } from './main'
 
 export default {
   data () {
     return {
       trainings,
       trainingToEdit: {},
-      addingNew: false
+      addingNew: false,
+      page: 'home'
     }
+  },
+  created () {
+    eventBus.$on('pageWasChanged', (data) => {
+      this.page = data
+    })
   },
   computed: {
     newTrainingId () {
@@ -108,14 +82,17 @@ export default {
     appAddTraining: AddTraining,
     appStartTraining: StartTraining,
     appWorkout: Workout,
-    appExerciseModal: ExerciseModal
+    appExerciseModal: ExerciseModal,
+    appSummary: Summary
   },
   methods: {
     setTrainingToEdit (trainingId) {
       this.trainingToEdit = this.trainings.find(training => training.id === trainingId)
+      this.page='edit'
     },
     editTraining (editedTraining) {
       this.trainingToEdit = {}
+      this.page = 'home'
     },
     deleteTraining (id) {
       let index = this.trainings.findIndex(training => training.id === id)
@@ -123,12 +100,86 @@ export default {
     },
     addNewTraining (data) {
       this.trainings.push(data)
-      this.addingNew = false
+      this.page = 'home'
     }
   }
 }
 </script>
 
 <style lang="css">
+  .wrapper {
+    background-color: #ffd700;
+    overflow: hidden;
+    min-height: 100vh;
+  }
 
+  .slide-enter {
+    opacity: 0;
+  }
+  .slide-enter-active {
+    animation: slide-in 1s ease-out forwards;
+    transition: opacity .5s;
+  }
+  /*.slide-leave {*/
+    /*opacity: 0;*/
+  /*}*/
+  /*.slide-leave-active {*/
+    /*animation: slide-out 1s ease-out forwards;*/
+    /*transition: opacity 1s;*/
+  /*}*/
+  .slide-move {
+    transition: transform 1s;
+  }
+
+  .lettersIn-enter {
+    letter-spacing: 2em;
+    opacity: 0;
+  }
+
+  .lettersIn-enter-active {
+    animation: tracking-in-contract 2s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+  }
+
+  .homebox-enter {
+    opacity: 0;
+  }
+
+  @keyframes slide-in {
+    from {
+      transform: translateY(50px);
+    }
+    to {
+      transform: translateY(0)
+    }
+  }
+  @keyframes slide-out {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(50px)
+    }
+  }
+  @keyframes tracking-in-contract {
+    0% {
+      letter-spacing: 2em;
+      opacity: 0;
+    }
+    40% {
+      opacity: 0.6;
+    }
+    100% {
+      letter-spacing: normal;
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-in-fwd-center {
+    0% {
+      transform: translateZ(-1400px);
+    }
+    100% {
+      transform: translateZ(0);
+    }
+  }
 </style>
